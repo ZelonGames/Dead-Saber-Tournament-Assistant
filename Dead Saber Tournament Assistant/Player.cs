@@ -111,7 +111,7 @@ namespace Dead_Saber_Tournament_Assistant
             if (NoteCount <= 0)
                 return 0;
 
-            return (decimal)Score / MaxRawScoreForNumberOfNotes(NoteCount) * 100;
+            return (decimal)Score / MaxRawScoreForNumberOfNotes(NoteCount);
         }
     }
 }
