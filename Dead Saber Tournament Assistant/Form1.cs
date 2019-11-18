@@ -49,13 +49,13 @@ namespace Dead_Saber_Tournament_Assistant
                     continue;
 
                 int maxScore = player.MaxRawScoreForNumberOfNotes(player.NoteCount);
-                decimal accuracy = Math.Round((decimal)player.Score / maxScore, decimals) * 100;
+                decimal accuracy = Math.Round((decimal)player.Score / maxScore * 100, decimals);
 
                 player.lblPercent.Text = accuracy + "% / " + maxScore;
             }
 
             int totalScore = players.Sum(x => x.Score);
-            decimal average = Math.Round(players.Sum(x => x.GetAverageScore()) / players.Count, decimals) * 100;
+            decimal average = Math.Round(players.Sum(x => x.GetAverageScore()) / players.Count * 100, decimals);
 
             lblTotalScore.Text = "Total Score: " + totalScore;
             lblAverage.Text = "Average: " + average + "%";
