@@ -32,6 +32,7 @@ namespace Dead_Saber_Tournament_Assistant
                 }
             }
         }
+
         public int NoteCount
         {
             get
@@ -47,7 +48,7 @@ namespace Dead_Saber_Tournament_Assistant
             }
         }
 
-        public Player(MapData mapData, Form1 form, ComboBox cmbDifficulty, TextBox scoreInputField, TextBox noteCountInputField)
+        public Player(MapData mapData, Form1 form, ComboBox cmbDifficulty, TextBox txtScore, TextBox txtNoteCount)
         {
             this.mapData = mapData;
 
@@ -60,12 +61,14 @@ namespace Dead_Saber_Tournament_Assistant
             cmbDifficulty.SelectedValueChanged += OnDifficultyChanged;
 
             this.cmbDifficulty = cmbDifficulty;
-            this.txtScore = scoreInputField;
-            this.txtNoteCount = noteCountInputField;
+            this.txtScore = txtScore;
+            this.txtNoteCount = txtNoteCount;
+            this.txtNoteCount.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+
 
             lblPercent = new Label();
             lblPercent.AutoSize = true;
-            lblPercent.Location = new Point(scoreInputField.Location.X + scoreInputField.Size.Width + 10, scoreInputField.Location.Y);
+            lblPercent.Location = new Point(txtScore.Location.X + txtScore.Size.Width + 10, txtScore.Location.Y);
             lblPercent.Text = "0%";
 
             form.Controls.Add(cmbDifficulty);
@@ -80,7 +83,7 @@ namespace Dead_Saber_Tournament_Assistant
             txtNoteCount.Text = GetNoteCount().ToString();
         }
 
-        public int MaxRawScoreForNumberOfNotes(int noteCount)
+        public int MaxRawScoreForNumberOfNotes(int noteCount, float multiplier)
         {
             int num = 0;
             int i;
@@ -96,7 +99,9 @@ namespace Dead_Saber_Tournament_Assistant
                 noteCount -= i * 2;
             }
             num += noteCount * i;
-            return num * 115;
+            int maxScore = num * 115;
+
+            return (int)Math.Floor(maxScore * multiplier);
         }
 
         public int GetNoteCount()
@@ -106,12 +111,12 @@ namespace Dead_Saber_Tournament_Assistant
             return difficulty != null ? difficulty.notes : 0;
         }
 
-        public decimal GetAverageScore()
+        public decimal GetAverageScore(float multiplier)
         {
             if (NoteCount <= 0)
                 return 0;
 
-            return (decimal)Score / MaxRawScoreForNumberOfNotes(NoteCount);
+            return (decimal)Score / MaxRawScoreForNumberOfNotes(NoteCount, multiplier);
         }
     }
 }

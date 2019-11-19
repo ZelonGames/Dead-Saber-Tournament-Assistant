@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using Newtonsoft.Json;
 
 using BeatSaverApiHelper;
+using Dead_Saber_Tournament_Assistant.Modifiers;
 
 namespace Dead_Saber_Tournament_Assistant
 {
@@ -29,7 +30,7 @@ namespace Dead_Saber_Tournament_Assistant
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            MaximumSize = MinimumSize = Size;
+            MinimumSize = Size;
 
             for (int i = 1; i <= cmbPrecision.MaxDropDownItems; i++)
             {
@@ -37,6 +38,14 @@ namespace Dead_Saber_Tournament_Assistant
             }
 
             cmbPrecision.SelectedIndex = 3;
+
+            Modifiers.ModifierHelper.ModifierChanged += OnModifierChanged;
+            Modifiers.ModifierHelper.AddModifiers(this, lblModifiers);
+        }
+
+        private void OnModifierChanged(float multiplier)
+        {
+            lblMultiplier.Text = "Total Multiplier: " + multiplier;
         }
 
         private void btnCalculate_Click(object sender, EventArgs e)
@@ -48,14 +57,14 @@ namespace Dead_Saber_Tournament_Assistant
                 if (player.NoteCount <= 0 || player.Score <= 0)
                     continue;
 
-                int maxScore = player.MaxRawScoreForNumberOfNotes(player.NoteCount);
+                int maxScore = player.MaxRawScoreForNumberOfNotes(player.NoteCount, ModifierHelper.TotalMultiplier);
                 decimal accuracy = Math.Round((decimal)player.Score / maxScore * 100, decimals);
 
                 player.lblPercent.Text = accuracy + "% / " + maxScore;
             }
 
             int totalScore = players.Sum(x => x.Score);
-            decimal average = Math.Round(players.Sum(x => x.GetAverageScore()) / players.Count * 100, decimals);
+            decimal average = Math.Round(players.Sum(x => x.GetAverageScore(ModifierHelper.TotalMultiplier)) / players.Count * 100, decimals);
 
             lblTotalScore.Text = "Total Score: " + totalScore;
             lblAverage.Text = "Average: " + average + "%";
